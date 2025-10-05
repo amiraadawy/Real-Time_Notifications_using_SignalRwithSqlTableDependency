@@ -17,41 +17,6 @@ It listens to SQL Server table changes and instantly sends updates to all connec
 ## 🧱 Architecture Flow
 SQL Table Change → TableDependency → SignalR Hub → Clients (Browser)
 
-yaml
-Copy code
-
----
-
-## 📁 Project Structure
-Real-Time_Notifications_using_SignalRwithSqlTableDependency/
-│
-├── Controllers/
-│ └── NotificationController.cs
-│
-├── Hubs/
-│ └── NotificationHub.cs
-│
-├── Models/
-│ └── Notification.cs
-│
-├── Services/
-│ ├── NotificationService.cs
-│ └── NotificationSqlService.cs
-│
-├── wwwroot/
-│ ├── js/
-│ │ └── notification.js
-│ └── css/
-│ └── site.css
-│
-├── appsettings.json
-├── Program.cs
-└── README.md
-
-yaml
-Copy code
-
----
 
 ## ⚙️ Setup Instructions
 
