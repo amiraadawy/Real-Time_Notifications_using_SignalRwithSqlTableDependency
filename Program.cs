@@ -1,3 +1,7 @@
+using Real_Time_Notifications_using_SignalR.Hubs;
+using Real_Time_Notifications_using_SignalR.IServices;
+using Real_Time_Notifications_using_SignalR.Services;
+
 namespace Real_Time_Notifications_using_SignalR
 {
     public class Program
@@ -8,7 +12,18 @@ namespace Real_Time_Notifications_using_SignalR
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddScoped<INotificationServices,NotificationServices>();
+            // Add SignalR service
+            builder.Services.AddSignalR();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                });
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -23,7 +38,7 @@ namespace Real_Time_Notifications_using_SignalR
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.MapHub<NotificationHub>("/NotificationHub");
             app.UseAuthorization();
 
             app.MapControllerRoute(
