@@ -1,41 +1,29 @@
-# 🔔 Real-Time Notifications using SignalR & SQL Table Dependency
+# 🔔 Real-Time Notifications using SignalR + SQL Table Dependency
 
-This project demonstrates real-time notifications in **ASP.NET Core** using **SignalR** and **SQL Table Dependency**.  
-Whenever data changes in the SQL database, notifications are instantly pushed to all connected clients.
-
----
-
-## 🚀 Technologies
-
-- ASP.NET Core 8.0  
-- SignalR  
-- SQL Server  
-- TableDependency   
-- JavaScript (client-side notifications)
+A real-time notification system built with **ASP.NET Core**, **SignalR**, and **SQL Table Dependency**.  
+It listens to SQL Server table changes and instantly sends updates to all connected clients using SignalR.
 
 ---
 
-## ⚙️ Features
-
-- Real-time database change detection  
-- SignalR hub for live updates  
-- Toast-style client notifications  
-- Dependency Injection & clean structure  
+## 🚀 Features
+✅ Real-time communication between server & clients  
+✅ SQL Table Dependency to detect table data changes  
+✅ SignalR for broadcasting updates instantly  
+✅ Toastify.js notifications for a clean UI  
+✅ Lightweight and fast – no external message broker needed  
 
 ---
 
-## 🧩 Architecture
-
-SQL Table Change → TableDependency → SignalR Hub → Clients
+## 🧱 Architecture Flow
+SQL Table Change → TableDependency → SignalR Hub → Clients (Browser)
 
 yaml
 Copy code
 
 ---
 
-## 📂 Project Structure
-
-Real-Time_Notifications_using_SignalR/
+## 📁 Project Structure
+Real-Time_Notifications_using_SignalRwithSqlTableDependency/
 │
 ├── Controllers/
 │ └── NotificationController.cs
@@ -47,30 +35,32 @@ Real-Time_Notifications_using_SignalR/
 │ └── Notification.cs
 │
 ├── Services/
-│ ├── NotificationSqlService.cs
-│ └── NotificationService.cs
+│ ├── NotificationService.cs
+│ └── NotificationSqlService.cs
 │
 ├── wwwroot/
 │ ├── js/
 │ │ └── notification.js
 │ └── css/
+│ └── site.css
 │
 ├── appsettings.json
-└── Program.cs
+├── Program.cs
+└── README.md
 
 yaml
 Copy code
 
 ---
 
-## 🛠️ Setup
+## ⚙️ Setup Instructions
 
 ### 1️⃣ Clone the project
 ```bash
-git clone https://github.com/amira-adawy/Real-Time_Notifications_using_SignalR.git
-cd Real-Time_Notifications_using_SignalR
+git clone https://github.com/amiraadawy/Real-Time_Notifications_using_SignalRwithSqlTableDependency.git
+cd Real-Time_Notifications_using_SignalRwithSqlTableDependency
 2️⃣ Configure SQL Connection
-Edit appsettings.json:
+Edit your appsettings.json file:
 
 json
 Copy code
@@ -78,6 +68,8 @@ Copy code
   "DefaultConnection": "Server=.;Database=NotificationDb;Trusted_Connection=True;TrustServerCertificate=True;"
 }
 3️⃣ Create Database & Table
+Run these queries in SQL Server:
+
 sql
 Copy code
 CREATE DATABASE NotificationDb;
@@ -87,26 +79,50 @@ USE NotificationDb;
 GO
 
 CREATE TABLE Notifications (
-    Id INT IDENTITY PRIMARY KEY,
-    Title NVARCHAR(100),
-    Message NVARCHAR(MAX),
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Message NVARCHAR(255),
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 4️⃣ Run the App
 bash
 Copy code
 dotnet run
-Then navigate to:
-👉 https://localhost:7099
+Then open in your browser:
 
-💬 API Endpoint
-Method	Endpoint	Description
-POST	/api/notification/send	Broadcasts a new notification
-
-Example:
-
-json
+arduino
 Copy code
-{
-  "Message": "A new order has been placed!"
-}
+https://localhost:7099
+💻 Client (Front-end)
+The notification.js script connects to the SignalR Hub and displays incoming notifications using Toastify.
+
+javascript
+Copy code
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7099/notificationHub")
+    .build();
+
+connection.on("ReceiveNotification", function (message) {
+    Toastify({ text: message, duration: 4000, gravity: "top", position: "right" }).showToast();
+});
+
+connection.start().then(() => console.log("✅ Connected to SignalR Hub"));
+🧠 How It Works
+The backend uses TableDependency to monitor the Notifications table in SQL Server.
+
+When a new record is inserted, TableDependency triggers an event.
+
+The service pushes this change to all clients via SignalR.
+
+The browser receives the notification and displays a toast message.
+
+🧩 Technologies Used
+ASP.NET Core 8.0
+
+SignalR
+
+TableDependency.SqlClient
+
+SQL Server
+
+Toastify.js (for front-end notifications)
+
