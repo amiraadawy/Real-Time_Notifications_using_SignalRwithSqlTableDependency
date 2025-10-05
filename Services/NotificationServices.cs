@@ -8,9 +8,11 @@ namespace Real_Time_Notifications_using_SignalR.Services
     public class NotificationServices:INotificationServices
     {
         private readonly IHubContext<NotificationHub> _hubContext;
+       
         public NotificationServices(IHubContext<NotificationHub> hubContext)
         {
             _hubContext = hubContext;
+           
         }
         public async Task SendNotificationToAll(NotificationDto notificationDto)
         {

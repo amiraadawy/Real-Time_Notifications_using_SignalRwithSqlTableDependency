@@ -17,7 +17,7 @@ namespace Real_Time_Notifications_using_SignalR.Controllers
             _notificationService = notificationService;
         }
         [HttpPost("send")]
-        public async Task<IActionResult> SendNotification([FromBody]  NotificationDto dto)
+        public async Task<IActionResult> SendNotification([FromBody] NotificationDto dto)
         {
             await _notificationService.SendNotificationToAll(dto);
             return Ok(new { Message = "Notification sent successfully." });

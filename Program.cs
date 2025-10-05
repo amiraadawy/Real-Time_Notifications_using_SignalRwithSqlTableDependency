@@ -13,17 +13,12 @@ namespace Real_Time_Notifications_using_SignalR
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<INotificationServices,NotificationServices>();
+            builder.Services.AddSingleton<NotificationSqlService>();
+            builder.Services.AddSingleton<NotificationHub>();
+
             // Add SignalR service
             builder.Services.AddSignalR();
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
-                {
-                    policy.AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowAnyOrigin();
-                });
-            });
+         
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,13 +33,20 @@ namespace Real_Time_Notifications_using_SignalR
             app.UseStaticFiles();
 
             app.UseRouting();
+              app.UseCors("AllowAll");
             app.MapHub<NotificationHub>("/NotificationHub");
+           
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            using (var scope = app.Services.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<NotificationSqlService>();
+                service.Start();
+            }
+        
             app.Run();
         }
     }
